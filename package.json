@@ -41,7 +41,7 @@
     "stack trace",
     "source map"
   ],
-  "main": "./dist/log.js",
+  "main": "./dist/index.js",
   "name": "get-stack-trace",
   "nyc": {
     "include": [
