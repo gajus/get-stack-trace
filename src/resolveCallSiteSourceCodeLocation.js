@@ -48,7 +48,7 @@ export default async (callSite: CallSiteType): Promise<SourceCodeLocationType> =
     if (originalPosition.source) {
       reportedNormalisedCallSite = {
         columnNumber: originalPosition.column,
-        fileName: path.resolve(path.dirname(fileName)),
+        fileName: path.resolve(path.dirname(fileName), originalPosition.source),
         lineNumber: originalPosition.line
       };
     }
