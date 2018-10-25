@@ -30,10 +30,10 @@ export type MaterializedCallSiteType = {|
   +callSiteIsTopLevel: boolean,
   +columnNumber: number,
   +evalOrigin: string,
-  +functionName: string | void,
-  +getFileName: string | void,
+  +fileName: string | void,
   // eslint-disable-next-line flowtype/no-weak-types
-  +getFunction: Function | void,
+  +function: Function | void,
+  +functionName: string | void,
   +lineNumber: number,
   +methodName: string | void,
   // eslint-disable-next-line flowtype/no-weak-types
