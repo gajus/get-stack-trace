@@ -37,10 +37,9 @@ $ cd ./dist && tree .
 
 ```js
 import {
-  getOriginalStackTrace,
   getStackTrace
 } from 'get-stack-trace';
 
-const traces = await getOriginalStackTrace(getStackTrace());
+const stackTrace = await getStackTrace();
 
 ```

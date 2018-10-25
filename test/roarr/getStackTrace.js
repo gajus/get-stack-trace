@@ -2,15 +2,12 @@
 
 import test from 'ava';
 import {
-  getStackTrace,
-  materializeCallSite
+  getStackTrace
 } from '../../src';
 
 test('creates a stack trace', async (t) => {
   const stackTrace = await getStackTrace();
 
-  const materializedCallSite = materializeCallSite(stackTrace[0]);
-
-  t.true(materializedCallSite.functionName === null);
-  t.true(materializedCallSite.fileName && materializedCallSite.fileName.includes('test/roarr/getStackTrace.js'));
+  t.true(stackTrace[0].functionName === null);
+  t.true(stackTrace[0].fileName && stackTrace[0].fileName.includes('test/roarr/getStackTrace.js'));
 });

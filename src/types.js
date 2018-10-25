@@ -30,25 +30,19 @@ export type MaterializedCallSiteType = {|
   +callSiteIsTopLevel: boolean,
   +columnNumber: number,
   +evalOrigin: string,
-  +fileName: string | void,
+  +fileName: string | null,
   // eslint-disable-next-line flowtype/no-weak-types
-  +function: Function | void,
-  +functionName: string | void,
+  +function: Function | null,
+  +functionName: string | null,
   +lineNumber: number,
-  +methodName: string | void,
+  +methodName: string | null,
   // eslint-disable-next-line flowtype/no-weak-types
-  +this: Object | void,
+  +this: Object | null,
   +typeName: string
 |};
 
-type NormalisedCallSiteType = {|
-  +columnNumber: string,
+export type SourceCodeLocationType = {|
+  +columnNumber: number,
   +fileName: string,
-  +lineNumber: string
-|};
-
-export type ResolvedCallSiteType = {|
-  +callSite: CallSiteType,
-  +originalNormalisedCallSite: NormalisedCallSiteType,
-  +reportedNormalisedCallSite: NormalisedCallSiteType
+  +lineNumber: number
 |};
