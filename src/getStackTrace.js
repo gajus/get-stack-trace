@@ -31,7 +31,7 @@ export default (): $ReadOnlyArray<MaterializedCallSiteType> => {
   return Bluebird
     .resolve(trail)
     .map(async (callSite) => {
-      if (isCallSiteSourceCodeLocationResolvable(callSite)) {
+      if (!isCallSiteSourceCodeLocationResolvable(callSite)) {
         return materializeCallSite(callSite);
       }
 
