@@ -11,5 +11,6 @@ test('creates a stack trace', async (t) => {
 
   const materializedCallSite = materializeCallSite(stackTrace[0]);
 
-  t.true(materializedCallSite.functionName === 'getStackTrace');
+  t.true(materializedCallSite.functionName === null);
+  t.true(materializedCallSite.fileName && materializedCallSite.fileName.includes('test/roarr/getStackTrace.js'));
 });

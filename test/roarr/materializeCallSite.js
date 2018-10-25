@@ -11,5 +11,6 @@ test('uses individual CallSite methods to resolve the underlying values', async 
 
   const materializedCallSite = materializeCallSite(stackTrace[0]);
 
-  t.true(materializedCallSite.functionName === 'getStackTrace');
+  t.true(materializedCallSite.functionName === null);
+  t.true(materializedCallSite.fileName && materializedCallSite.fileName.includes('test/roarr/materializeCallSite.js'));
 });

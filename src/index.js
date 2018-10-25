@@ -47,7 +47,7 @@ const getStackTrace = (): $ReadOnlyArray<CallSiteType> => {
   Error.stackTraceLimit = oldStackTraceLimit;
   Error.prepareStackTrace = oldPrepareStackTrace;
 
-  return callSites;
+  return callSites.slice(1);
 };
 
 const isReadableFile = (filePath: string): boolean => {
