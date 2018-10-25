@@ -9,7 +9,7 @@ import type {
   MaterializedCallSiteType
 } from './types';
 
-export default (): $ReadOnlyArray<MaterializedCallSiteType> => {
+export default (): Promise<$ReadOnlyArray<MaterializedCallSiteType>> => {
   const oldStackTraceLimit = Error.stackTraceLimit;
   const oldPrepareStackTrace = Error.prepareStackTrace;
 
