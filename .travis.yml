@@ -5,6 +5,9 @@ node_js:
 script:
   - npm run lint
   - npm run test
+  - NODE_ENV=test nyc --silent ava
+  - nyc report --reporter=text-lcov | coveralls
+  - nyc check-coverage --lines 60
 notifications:
   email: false
 sudo: false
