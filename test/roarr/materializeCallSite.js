@@ -6,7 +6,7 @@ import {
   materializeCallSite
 } from '../../src';
 
-test('creates a stack trace', async (t) => {
+test('uses individual CallSite methods to resolve the underlying values', async (t) => {
   const stackTrace = await getStackTrace();
 
   const materializedCallSite = materializeCallSite(stackTrace[0]);
