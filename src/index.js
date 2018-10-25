@@ -63,12 +63,12 @@ const isReadableFile = (filePath: string): boolean => {
 const getOriginalStackTrace = (callSites: $ReadOnlyArray<CallSiteType>): Promise<$ReadOnlyArray<ResolvedCallSiteType>> => {
   return Bluebird
     .resolve(callSites)
-    .map(async (callSite) => {
+    .mapSeries(async (callSite) => {
       const columnNumber = callSite.getColumnNumber();
       const fileName = callSite.getFileName();
       const lineNumber = callSite.getLineNumber();
 
-      const maybeMapFilePath = callSite.getFileName() + '.map';
+      const maybeMapFilePath = fileName + '.map';
 
       const reportedNormalisedCallSite = {
         columnNumber,
@@ -92,7 +92,7 @@ const getOriginalStackTrace = (callSites: $ReadOnlyArray<CallSiteType>): Promise
 
         originalNormalisedCallSite = {
           columnNumber: originalPosition.column,
-          fileName: originalPosition.source ? path.resolve(path.basename(fileName), originalPosition.source) : null,
+          fileName: originalPosition.source ? path.resolve(path.dirname(fileName), originalPosition.source) : null,
           lineNumber: originalPosition.line
         };
       }
