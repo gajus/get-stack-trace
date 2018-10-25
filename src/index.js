@@ -8,8 +8,27 @@ import {
 } from 'source-map';
 import type {
   CallSiteType,
+  MaterializedCallSiteType,
   ResolvedCallSiteType
 } from './types';
+
+const materializeCallSite = (callSite: CallSiteType): MaterializedCallSiteType => {
+  return {
+    callSiteIsConstructor: callSite.isConstructor(),
+    callSiteIsEval: callSite.isEval(),
+    callSiteIsNative: callSite.isNative(),
+    callSiteIsTopLevel: callSite.isToplevel(),
+    columnNumber: callSite.getColumnNumber(),
+    evalOrigin: callSite.getEvalOrigin(),
+    functionName: callSite.getFunctionName(),
+    getFileName: callSite.getFileName(),
+    getFunction: callSite.getFunction(),
+    lineNumber: callSite.getLineNumber(),
+    methodName: callSite.getMethodName(),
+    this: callSite.getThis(),
+    typeName: callSite.getTypeName()
+  };
+};
 
 const getStackTrace = (): $ReadOnlyArray<CallSiteType> => {
   const oldStackTraceLimit = Error.stackTraceLimit;
@@ -88,5 +107,6 @@ const getOriginalStackTrace = (callSites: $ReadOnlyArray<CallSiteType>): Promise
 
 export {
   getOriginalStackTrace,
-  getStackTrace
+  getStackTrace,
+  materializeCallSite
 };

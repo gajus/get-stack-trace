@@ -23,6 +23,24 @@ export type CallSiteType = {|
   +isToplevel: () => boolean
 |};
 
+export type MaterializedCallSiteType = {|
+  +callSiteIsConstructor: boolean,
+  +callSiteIsEval: boolean,
+  +callSiteIsNative: boolean,
+  +callSiteIsTopLevel: boolean,
+  +columnNumber: number,
+  +evalOrigin: string,
+  +functionName: string | void,
+  +getFileName: string | void,
+  // eslint-disable-next-line flowtype/no-weak-types
+  +getFunction: Function | void,
+  +lineNumber: number,
+  +methodName: string | void,
+  // eslint-disable-next-line flowtype/no-weak-types
+  +this: Object | void,
+  +typeName: string
+|};
+
 type NormalisedCallSiteType = {|
   +columnNumber: string,
   +fileName: string,
