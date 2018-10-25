@@ -8,14 +8,12 @@
 export type CallSiteType = {|
   +getColumnNumber: () => number,
   +getEvalOrigin: () => string,
-
+  +getFileName: () => string | void,
   // eslint-disable-next-line flowtype/no-weak-types
-  +getFileName: () => Function | void,
-  +getFunction: () => string | void,
+  +getFunction: () => Function | void,
   +getFunctionName: () => string,
   +getLineNumber: () => number,
   +getMethodName: () => string,
-
   // eslint-disable-next-line flowtype/no-weak-types
   +getThis: () => Object | void,
   +getTypeName: () => string,
