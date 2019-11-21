@@ -2,7 +2,7 @@
 
 import test from 'ava';
 import {
-  getStackTrace
+  getStackTrace,
 } from '../../src';
 
 test('creates a stack trace', async (t) => {

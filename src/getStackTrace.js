@@ -6,7 +6,7 @@ import materializeCallSite from './materializeCallSite';
 import resolveCallSiteSourceCodeLocation from './resolveCallSiteSourceCodeLocation';
 import type {
   CallSiteType,
-  MaterializedCallSiteType
+  MaterializedCallSiteType,
 } from './types';
 
 export default (): Promise<$ReadOnlyArray<MaterializedCallSiteType>> => {
@@ -37,7 +37,7 @@ export default (): Promise<$ReadOnlyArray<MaterializedCallSiteType>> => {
 
       return {
         ...materializeCallSite(callSite),
-        ...await resolveCallSiteSourceCodeLocation(callSite)
+        ...await resolveCallSiteSourceCodeLocation(callSite),
       };
     });
 };

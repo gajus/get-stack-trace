@@ -20,7 +20,7 @@ export type CallSiteType = {|
   +isConstructor: () => boolean,
   +isEval: () => boolean,
   +isNative: () => boolean,
-  +isToplevel: () => boolean
+  +isToplevel: () => boolean,
 |};
 
 export type MaterializedCallSiteType = {|
@@ -38,11 +38,11 @@ export type MaterializedCallSiteType = {|
   +methodName: string | null,
   // eslint-disable-next-line flowtype/no-weak-types
   +this: Object | null,
-  +typeName: string
+  +typeName: string,
 |};
 
 export type SourceCodeLocationType = {|
   +columnNumber: number,
   +fileName: string,
-  +lineNumber: number
+  +lineNumber: number,
 |};

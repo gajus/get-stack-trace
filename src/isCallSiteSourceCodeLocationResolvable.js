@@ -1,7 +1,7 @@
 // @flow
 
 import type {
-  CallSiteType
+  CallSiteType,
 } from './types';
 
 export default (callSite: CallSiteType) => {

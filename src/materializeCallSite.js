@@ -2,7 +2,7 @@
 
 import type {
   CallSiteType,
-  MaterializedCallSiteType
+  MaterializedCallSiteType,
 } from './types';
 
 export default (callSite: CallSiteType): MaterializedCallSiteType => {
@@ -19,6 +19,6 @@ export default (callSite: CallSiteType): MaterializedCallSiteType => {
     lineNumber: callSite.getLineNumber(),
     methodName: callSite.getMethodName(),
     this: callSite.getThis() || null,
-    typeName: callSite.getTypeName()
+    typeName: callSite.getTypeName(),
   };
 };

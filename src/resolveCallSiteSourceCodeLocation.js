@@ -3,13 +3,13 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  SourceMapConsumer
+  SourceMapConsumer,
 } from 'source-map';
 import isCallSiteSourceCodeLocationResolvable from './isCallSiteSourceCodeLocationResolvable';
 import isReadableFile from './isReadableFile';
 import type {
   CallSiteType,
-  SourceCodeLocationType
+  SourceCodeLocationType,
 } from './types';
 
 export default async (callSite: CallSiteType): Promise<SourceCodeLocationType> => {
@@ -30,7 +30,7 @@ export default async (callSite: CallSiteType): Promise<SourceCodeLocationType> =
   let reportedNormalisedCallSite = {
     columnNumber,
     fileName,
-    lineNumber
+    lineNumber,
   };
 
   if (isReadableFile(maybeMapFilePath)) {
@@ -40,7 +40,7 @@ export default async (callSite: CallSiteType): Promise<SourceCodeLocationType> =
 
     const originalPosition = consumer.originalPositionFor({
       column: columnNumber,
-      line: lineNumber
+      line: lineNumber,
     });
 
     await consumer.destroy();
@@ -49,7 +49,7 @@ export default async (callSite: CallSiteType): Promise<SourceCodeLocationType> =
       reportedNormalisedCallSite = {
         columnNumber: originalPosition.column,
         fileName: path.resolve(path.dirname(fileName), originalPosition.source),
-        lineNumber: originalPosition.line
+        lineNumber: originalPosition.line,
       };
     }
   }
