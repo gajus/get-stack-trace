@@ -6,7 +6,6 @@ import path from 'path';
 import {
   SourceMapConsumer,
   NullableMappedPosition,
-  RawSourceMap,
 } from 'source-map';
 import isCallSiteSourceCodeLocationResolvable from './isCallSiteSourceCodeLocationResolvable';
 import isReadableFile from './isReadableFile';
@@ -17,10 +16,9 @@ import type {
 
 const readFile = promisify(fs.readFile);
 
-const cachedSourceMaps: { [string]: Promise<RawSourceMap> | typeof undefined, ... } = {};
 const cachedOriginalLines: { [string]: Promise<NullableMappedPosition> | typeof undefined, ... } = {};
 
-const resolveOriginalPosition = async (mapFilePath: string, column: number, line: number): Promise<NullableMappedPosition> => {
+const resolveOriginalPosition = (mapFilePath: string, column: number, line: number): Promise<NullableMappedPosition> => {
   const lineKey = `${mapFilePath}-${line}-${column}`;
 
   // if possible, attempt to resolve the original lines from cache
@@ -30,15 +28,7 @@ const resolveOriginalPosition = async (mapFilePath: string, column: number, line
     // Otherwise, consume the source map (hopefully from cache), and resolve the
     // original line numbers
     originalLineResult = (async () => {
-      let sourceMapResult = cachedSourceMaps[mapFilePath];
-
-      if (!sourceMapResult) {
-        sourceMapResult = (async () => {
-          return JSON.parse(await readFile(mapFilePath, 'utf8'));
-        })();
-
-        cachedSourceMaps[mapFilePath] = sourceMapResult;
-      }
+      const sourceMapResult = JSON.parse(await readFile(mapFilePath, 'utf8'));
 
       return SourceMapConsumer.with(await sourceMapResult, undefined, (source) => {
         return source.originalPositionFor({

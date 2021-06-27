@@ -30,8 +30,8 @@ mockfs({
   'testsource.map': JSON.stringify(testSourceMap),
 });
 
-test('caches source maps once theyve been read', async (t) => {
-  const callSite1 = await resolveCallSiteSourceCodeLocation({
+test('caches original line results', async (t) => {
+  const callSite = {
     getColumnNumber: () => {
       return 28;
     },
@@ -41,29 +41,18 @@ test('caches source maps once theyve been read', async (t) => {
     getLineNumber: () => {
       return 2;
     },
-  });
+  };
+  const originalCallsite1 = await resolveCallSiteSourceCodeLocation(callSite);
 
-  t.deepEqual(callSite1, {columnNumber: 10,
+  t.deepEqual(originalCallsite1, {columnNumber: 10,
     fileName: `${path.resolve(path.join(__dirname, '../'))}/http:/example.com/www/js/two.js`,
     lineNumber: 2});
 
   // // When we delete the map, we still expect the in memory map to be used
   await deleteFile('testsource.map');
 
-  const callSite2 = await resolveCallSiteSourceCodeLocation({
-    getColumnNumber: () => {
-      return 10;
-    },
-    getFileName: () => {
-      return 'testsource';
-    },
-    getLineNumber: () => {
-      return 2;
-    },
-  });
-  t.deepEqual(callSite2, {columnNumber: 11,
-    fileName: `${path.resolve(path.join(__dirname, '../'))}/http:/example.com/www/js/two.js`,
-    lineNumber: 1});
+  const originalCallsite2 = await resolveCallSiteSourceCodeLocation(callSite);
+  t.deepEqual(originalCallsite2, originalCallsite1);
 });
 
 test('only attempts to access maps once', async (t) => {
