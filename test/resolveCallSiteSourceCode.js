@@ -66,7 +66,7 @@ test('caches source maps once theyve been read', async (t) => {
     lineNumber: 1});
 });
 
-test('only attemps to access maps once', async (t) => {
+test('only attempts to access maps once', async (t) => {
   const callSite1 = await resolveCallSiteSourceCodeLocation({
     getColumnNumber: () => {
       return 28;
