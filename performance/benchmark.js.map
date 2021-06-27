@@ -1,0 +1,15 @@
+{
+  "file": "min.js",
+  "mappings": "CAAC,IAAI,IAAM,SAAUA,GAClB,OAAOC,IAAID;CCDb,IAAI,IAAM,SAAUE,GAClB,OAAOA",
+  "names": [
+    "bar",
+    "baz",
+    "n"
+  ],
+  "sourceRoot": "http: //example.com/www/js/",
+  "sources": [
+    "one.js",
+    "two.js"
+  ],
+  "version": 3
+}

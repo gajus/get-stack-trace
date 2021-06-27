@@ -1,9 +1,11 @@
 // @flow
 
 import fs from 'fs';
+import {promisify} from 'util';
 import path from 'path';
 import {
   SourceMapConsumer,
+  NullableMappedPosition,
 } from 'source-map';
 import isCallSiteSourceCodeLocationResolvable from './isCallSiteSourceCodeLocationResolvable';
 import isReadableFile from './isReadableFile';
@@ -11,6 +13,36 @@ import type {
   CallSiteType,
   SourceCodeLocationType,
 } from './types';
+
+const readFile = promisify(fs.readFile);
+
+const cachedOriginalLines: { [string]: Promise<NullableMappedPosition> | typeof undefined, ... } = {};
+
+const resolveOriginalPosition = (mapFilePath: string, column: number, line: number): Promise<NullableMappedPosition> => {
+  const lineKey = `${mapFilePath}-${line}-${column}`;
+
+  // if possible, attempt to resolve the original lines from cache
+  let originalLineResult = cachedOriginalLines[lineKey];
+
+  if (!originalLineResult) {
+    // Otherwise, consume the source map (hopefully from cache), and resolve the
+    // original line numbers
+    originalLineResult = (async () => {
+      const sourceMapResult = JSON.parse(await readFile(mapFilePath, 'utf8'));
+
+      return SourceMapConsumer.with(await sourceMapResult, undefined, (source) => {
+        return source.originalPositionFor({
+          column,
+          line,
+        });
+      });
+    })();
+  }
+
+  cachedOriginalLines[lineKey] = originalLineResult;
+
+  return originalLineResult;
+};
 
 export default async (callSite: CallSiteType): Promise<SourceCodeLocationType> => {
   if (!isCallSiteSourceCodeLocationResolvable(callSite)) {
@@ -34,16 +66,7 @@ export default async (callSite: CallSiteType): Promise<SourceCodeLocationType> =
   };
 
   if (isReadableFile(maybeMapFilePath)) {
-    const rawSourceMap = JSON.parse(fs.readFileSync(maybeMapFilePath, 'utf8'));
-
-    const consumer = await new SourceMapConsumer(rawSourceMap);
-
-    const originalPosition = consumer.originalPositionFor({
-      column: columnNumber,
-      line: lineNumber,
-    });
-
-    await consumer.destroy();
+    const originalPosition = await resolveOriginalPosition(maybeMapFilePath, columnNumber, lineNumber);
 
     if (originalPosition.source) {
       reportedNormalisedCallSite = {
