@@ -12,6 +12,7 @@ node_js:
 script:
   - npm run lint
   - npm run test
+  - npm run build
   - npm run benchmark
   - NODE_ENV=test nyc --silent ava
   - nyc report --reporter=text-lcov | coveralls
