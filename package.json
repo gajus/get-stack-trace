@@ -31,6 +31,7 @@
     "flow-copy-source": "^2.0.9",
     "husky": "^3.1.0",
     "mock-fs": "^5.0.0",
+    "nodemark": "^0.3.0",
     "nyc": "^14.1.1"
   },
   "engines": {
@@ -68,7 +69,8 @@
     "build": "rm -fr ./dist && NODE_ENV=production babel ./src --out-dir ./dist --copy-files --source-maps && flow-copy-source src dist",
     "dev": "NODE_ENV=production babel ./src --out-dir ./dist --copy-files --source-maps --watch",
     "lint": "eslint ./src ./test && flow",
-    "test": "NODE_ENV=test nyc ava --verbose --serial --concurrency 1"
+    "test": "NODE_ENV=test nyc ava --verbose --serial --concurrency 1",
+    "benchmark": "node performance/benchmark.js"
   },
   "version": "2.0.3"
 }
