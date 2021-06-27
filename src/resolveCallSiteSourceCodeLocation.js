@@ -6,7 +6,7 @@ import path from 'path';
 import {
   SourceMapConsumer,
   NullableMappedPosition,
-  BasicSourceMapConsumer,
+  RawSourceMap,
 } from 'source-map';
 import isCallSiteSourceCodeLocationResolvable from './isCallSiteSourceCodeLocationResolvable';
 import isReadableFile from './isReadableFile';
@@ -17,27 +17,41 @@ import type {
 
 const readFile = promisify(fs.readFile);
 
-const cachedSourceMaps: { [string]: Promise<BasicSourceMapConsumer> | typeof undefined, ... } = {};
+const cachedSourceMaps: { [string]: Promise<RawSourceMap> | typeof undefined, ... } = {};
+const cachedOriginalLines: { [string]: Promise<NullableMappedPosition> | typeof undefined, ... } = {};
 
 const resolveOriginalPosition = async (mapFilePath: string, column: number, line: number): Promise<NullableMappedPosition> => {
-  let sourceMapResult = cachedSourceMaps[mapFilePath];
+  const lineKey = `${mapFilePath}-${line}-${column}`;
 
-  if (!sourceMapResult) {
-    sourceMapResult = (async () => {
-      const rawSourceMap = JSON.parse(await readFile(mapFilePath, 'utf8'));
+  // if possible, attempt to resolve the original lines from cache
+  let originalLineResult = cachedOriginalLines[lineKey];
 
-      return new SourceMapConsumer(rawSourceMap);
+  if (!originalLineResult) {
+    // Otherwise, consume the source map (hopefully from cache), and resolve the
+    // original line numbers
+    originalLineResult = (async () => {
+      let sourceMapResult = cachedSourceMaps[mapFilePath];
+
+      if (!sourceMapResult) {
+        sourceMapResult = (async () => {
+          return JSON.parse(await readFile(mapFilePath, 'utf8'));
+        })();
+
+        cachedSourceMaps[mapFilePath] = sourceMapResult;
+      }
+
+      return SourceMapConsumer.with(await sourceMapResult, undefined, (source) => {
+        return source.originalPositionFor({
+          column,
+          line,
+        });
+      });
     })();
-
-    cachedSourceMaps[mapFilePath] = sourceMapResult;
   }
 
-  const sourceMap = await sourceMapResult;
+  cachedOriginalLines[lineKey] = originalLineResult;
 
-  return sourceMap.originalPositionFor({
-    column,
-    line,
-  });
+  return originalLineResult;
 };
 
 export default async (callSite: CallSiteType): Promise<SourceCodeLocationType> => {
