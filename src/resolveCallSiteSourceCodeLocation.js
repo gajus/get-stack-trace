@@ -1,9 +1,12 @@
 // @flow
 
 import fs from 'fs';
+import {promisify} from 'util';
 import path from 'path';
 import {
   SourceMapConsumer,
+  NullableMappedPosition,
+  BasicSourceMapConsumer,
 } from 'source-map';
 import isCallSiteSourceCodeLocationResolvable from './isCallSiteSourceCodeLocationResolvable';
 import isReadableFile from './isReadableFile';
@@ -11,6 +14,31 @@ import type {
   CallSiteType,
   SourceCodeLocationType,
 } from './types';
+
+const readFile = promisify(fs.readFile);
+
+const cachedSourceMaps: { [string]: Promise<BasicSourceMapConsumer> | typeof undefined, ... } = {};
+
+const resolveOriginalPosition = async (mapFilePath: string, column: number, line: number): Promise<NullableMappedPosition> => {
+  let sourceMapResult = cachedSourceMaps[mapFilePath];
+
+  if (!sourceMapResult) {
+    sourceMapResult = (async () => {
+      const rawSourceMap = JSON.parse(await readFile(mapFilePath, 'utf8'));
+
+      return new SourceMapConsumer(rawSourceMap);
+    })();
+
+    cachedSourceMaps[mapFilePath] = sourceMapResult;
+  }
+
+  const sourceMap = await sourceMapResult;
+
+  return sourceMap.originalPositionFor({
+    column,
+    line,
+  });
+};
 
 export default async (callSite: CallSiteType): Promise<SourceCodeLocationType> => {
   if (!isCallSiteSourceCodeLocationResolvable(callSite)) {
@@ -34,16 +62,7 @@ export default async (callSite: CallSiteType): Promise<SourceCodeLocationType> =
   };
 
   if (isReadableFile(maybeMapFilePath)) {
-    const rawSourceMap = JSON.parse(fs.readFileSync(maybeMapFilePath, 'utf8'));
-
-    const consumer = await new SourceMapConsumer(rawSourceMap);
-
-    const originalPosition = consumer.originalPositionFor({
-      column: columnNumber,
-      line: lineNumber,
-    });
-
-    await consumer.destroy();
+    const originalPosition = await resolveOriginalPosition(maybeMapFilePath, columnNumber, lineNumber);
 
     if (originalPosition.source) {
       reportedNormalisedCallSite = {
