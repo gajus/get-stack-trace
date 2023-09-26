@@ -11,7 +11,10 @@
 ```js
 import {
   getStackTrace,
+  serializeStackTrace,
 } from 'get-stack-trace';
 
 const stackTrace = getStackTrace();
+
+serializeStackTrace('Error', 'Hello, World!', stackTrace);
 ```
