@@ -30,5 +30,6 @@
     "lint": "eslint . && tsc --noEmit",
     "test": "vitest"
   },
+  "types": "./dist/index.d.ts",
   "version": "0.0.0"
 }
