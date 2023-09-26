@@ -7,7 +7,7 @@
   "dependencies": {
     "stacktrace-parser": "^0.1.10"
   },
-  "description": "V8 stack traces",
+  "description": "Stack traces as an array of stack frames with source maps support.",
   "devDependencies": {
     "@semantic-release/commit-analyzer": "^11.0.0",
     "@semantic-release/github": "^9.1.0",

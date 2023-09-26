@@ -4,7 +4,7 @@
 [![Canonical Code Style](https://img.shields.io/badge/code%20style-canonical-blue.svg?style=flat-square)](https://github.com/gajus/canonical)
 [![Twitter Follow](https://img.shields.io/twitter/follow/kuizinas.svg?style=social&label=Follow)](https://twitter.com/kuizinas)
 
-[V8 stack traces](https://github.com/v8/v8/wiki/Stack-Trace-API) as an object.
+Stack traces as an array of stack frames with source maps support.
 
 ## Usage
 
