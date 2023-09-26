@@ -1,34 +1,29 @@
 import { type StackTrace } from './types';
+import { parse as parseStackTrace } from 'stacktrace-parser';
 
 export const getStackTrace = (): StackTrace => {
-  const oldStackTraceLimit = Error.stackTraceLimit;
-  const oldPrepareStackTrace = Error.prepareStackTrace;
+  // The reason we are parsing the stack trace rather than
+  // using captureStackTrace is because captureStackTrace
+  // does not resolve source maps, i.e. the stack trace
+  // will contain the compiled code references rather than
+  // the original source code references.
+  //
+  // eslint-disable-next-line unicorn/error-message
+  const stackTrace = new Error().stack;
 
-  Error.prepareStackTrace = (error, structuredStackTrace) => {
-    return structuredStackTrace;
-  };
+  if (!stackTrace) {
+    throw new Error('Could not get stack trace');
+  }
 
-  const honeypot: { stack: NodeJS.CallSite[] } = {
-    stack: [],
-  };
-
-  Error.captureStackTrace(honeypot);
-
-  const callSites = honeypot.stack;
-
-  Error.stackTraceLimit = oldStackTraceLimit;
-  Error.prepareStackTrace = oldPrepareStackTrace;
-
-  const trail: readonly NodeJS.CallSite[] = callSites.slice(1);
-
-  return {
-    callSites: trail.map((callSite) => {
+  return parseStackTrace(stackTrace)
+    .map((stackFrame) => {
       return {
-        columnNumber: callSite.getColumnNumber(),
-        fileName: callSite.getFileName() ?? null,
-        functionName: callSite.getFunctionName(),
-        lineNumber: callSite.getLineNumber(),
+        arguments: stackFrame.arguments,
+        columnNumber: stackFrame.column,
+        fileName: stackFrame.file,
+        functionName: stackFrame.methodName,
+        lineNumber: stackFrame.lineNumber,
       };
-    }),
-  };
+    })
+    .slice(1);
 };

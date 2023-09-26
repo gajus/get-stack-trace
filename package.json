@@ -4,6 +4,9 @@
     "name": "Gajus Kuizinas",
     "url": "https://gajus.com"
   },
+  "dependencies": {
+    "stacktrace-parser": "^0.1.10"
+  },
   "description": "V8 stack traces",
   "devDependencies": {
     "@semantic-release/commit-analyzer": "^11.0.0",

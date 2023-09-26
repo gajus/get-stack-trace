@@ -10,7 +10,7 @@ export const serializeStackTrace = (
     ': ' +
     errorMessage +
     '\n' +
-    stackTrace.callSites
+    stackTrace
       .map((stackFrame) => {
         const { columnNumber, fileName, functionName, lineNumber } = stackFrame;
 
